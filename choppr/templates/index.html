@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHOPPR — YouTube to Shorts</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #080808;
+  --card: #101010;
+  --card2: #161616;
+  --border: #1e1e1e;
+  --accent: #d4ff00;
+  --accent2: #ff3b6e;
+  --text: #efefef;
+  --muted: #555;
+  --muted2: #888;
+}
+
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  cursor: default;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 50% at 50% -10%, #d4ff0008 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── HEADER ── */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 48px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  z-index: 10;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.logo-word {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 6px;
+  color: var(--accent);
+}
+
+.logo-word span { color: var(--accent2); }
+
+.logo-sub {
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.header-right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.pill {
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.pill-tt { background: #ff005012; color: #ff3366; border: 1px solid #ff003330; }
+.pill-ig { background: #c1358412; color: #e8609a; border: 1px solid #c1358430; }
+.pill-yt { background: #ff000012; color: #ff4444; border: 1px solid #ff000030; }
+
+/* ── MAIN ── */
+main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 60px 32px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── HERO ── */
+.hero {
+  text-align: center;
+  margin-bottom: 52px;
+  animation: fadeUp 0.6s ease both;
+}
+
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 9vw, 6.5rem);
+  line-height: 0.9;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+
+.hero h1 .line2 {
+  color: var(--accent);
+  display: block;
+}
+
+.hero p {
+  color: var(--muted2);
+  font-size: 0.95rem;
+  max-width: 420px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ── INPUT CARD ── */
+.input-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 32px;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+
+.input-label {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted2);
+  margin-bottom: 10px;
+  display: block;
+}
+
+.url-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.url-input {
+  flex: 1;
+  background: var(--black);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.url-input:focus {
+  border-color: var(--accent);
+}
+
+.url-input::placeholder { color: var(--muted); }
+
+.btn-primary {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 28px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+}
+
+.btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* Platforms */
+.platform-section label.input-label { margin-bottom: 10px; }
+
+.platform-toggles {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.platform-toggle {
+  position: relative;
+}
+
+.platform-toggle input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0; height: 0;
+}
+
+.platform-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: all 0.15s;
+  user-select: none;
+  background: var(--black);
+  color: var(--muted2);
+}
+
+.platform-toggle input:checked + label {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #d4ff0010;
+}
+
+.platform-icon { font-size: 1rem; }
+
+/* ── PROGRESS ── */
+#progress-section {
+  display: none;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 32px;
+  animation: fadeUp 0.4s ease both;
+}
+
+.progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.progress-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  color: var(--accent);
+}
+
+.progress-step {
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted2);
+}
+
+.progress-bar-wrap {
+  background: var(--black);
+  border-radius: 100px;
+  height: 6px;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #aaff00);
+  border-radius: 100px;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+.progress-message {
+  font-size: 0.85rem;
+  color: var(--muted2);
+}
+
+.progress-clips-count {
+  font-size: 0.82rem;
+  color: var(--muted2);
+  margin-top: 6px;
+}
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* ── VIDEO INFO ── */
+#video-info-section {
+  display: none;
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  display: none;
+  align-items: center;
+  gap: 20px;
+}
+
+.video-thumb {
+  width: 100px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: var(--border);
+}
+
+.video-meta h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.video-meta p {
+  font-size: 0.75rem;
+  color: var(--muted2);
+}
+
+/* ── CLIPS RESULTS ── */
+#results-section {
+  display: none;
+  animation: fadeUp 0.4s ease both;
+}
+
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.results-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 2px;
+}
+
+.results-title span { color: var(--accent); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.btn-secondary:hover { border-color: var(--muted2); }
+
+.clips-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Clip card */
+.clip-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.clip-card:hover { border-color: #2a2a2a; }
+
+.clip-card-top {
+  display: flex;
+  align-items: stretch;
+}
+
+.clip-number-bar {
+  width: 56px;
+  background: var(--black);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+}
+
+.clip-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.clip-num-label {
+  font-size: 0.55rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.clip-body {
+  flex: 1;
+  padding: 20px 24px;
+}
+
+.clip-hook {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 1px;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.1;
+}
+
+.clip-timestamps {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.timestamp-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted2);
+  letter-spacing: 0.5px;
+}
+
+.timestamp-badge .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.ts-dur {
+  background: #d4ff0015;
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.clip-why {
+  font-size: 0.8rem;
+  color: var(--muted2);
+  font-style: italic;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.clip-platforms {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.clip-platform-tag {
+  padding: 3px 9px;
+  border-radius: 4px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.tag-tiktok { background: #ff005015; color: #ff3366; border: 1px solid #ff003328; }
+.tag-instagram { background: #c1358415; color: #e8609a; border: 1px solid #c1358428; }
+.tag-youtube { background: #ff000015; color: #ff5555; border: 1px solid #ff000028; }
+
+.clip-caption-wrap {
+  background: var(--black);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.clip-caption-label {
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.clip-caption-text {
+  font-size: 0.82rem;
+  color: var(--muted2);
+  line-height: 1.55;
+}
+
+.clip-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn-download {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+
+.btn-download:hover { opacity: 0.85; }
+
+.btn-copy {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: var(--muted2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-copy:hover { border-color: var(--muted2); color: var(--text); }
+
+.clip-video-wrap {
+  background: #000;
+  display: none;
+  border-top: 1px solid var(--border);
+}
+
+.clip-video-wrap video {
+  width: 100%;
+  max-height: 320px;
+  display: block;
+}
+
+/* ── ERROR ── */
+.error-box {
+  background: #ff3b6e10;
+  border: 1px solid #ff3b6e30;
+  border-radius: 12px;
+  padding: 20px 24px;
+  color: #ff7a96;
+  font-size: 0.85rem;
+  display: none;
+  margin-bottom: 24px;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── TOGGLE SWITCH ── */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  border-radius: 100px;
+  transition: background 0.2s;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 18px; height: 18px;
+  left: 3px; top: 3px;
+  background: #555;
+  border-radius: 50%;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.toggle-switch input:checked + .toggle-slider { background: #d4ff0025; }
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+  background: var(--accent);
+}
+
+/* ── SUBTITLE BADGE ── */
+.sub-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: #d4ff0015;
+  color: var(--accent);
+  border: 1px solid #d4ff0030;
+}
+
+/* ── FOOTER ── */
+footer {
+  text-align: center;
+  padding: 32px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-top: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+}
+
+/* ── COPIED TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(60px);
+  background: var(--accent);
+  color: #000;
+  padding: 10px 22px;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: transform 0.3s ease;
+  z-index: 999;
+  pointer-events: none;
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ── PLAN PREVIEW banner ── */
+.plan-preview-note {
+  background: #d4ff0010;
+  border: 1px solid #d4ff0025;
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-size: 0.78rem;
+  color: var(--accent);
+  margin-bottom: 20px;
+  display: none;
+}
+
+@media (max-width: 600px) {
+  header { padding: 18px 20px; }
+  main { padding: 40px 16px 60px; }
+  .url-row { flex-direction: column; }
+  .clip-card-top { flex-direction: column; }
+  .clip-number-bar { width: 100%; flex-direction: row; padding: 12px 20px; border-right: none; border-bottom: 1px solid var(--border); gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-word">CHOP<span>PR</span></div>
+    <div class="logo-sub">YouTube → Shorts Engine</div>
+  </div>
+  <div class="header-right">
+    <span class="pill pill-tt">TikTok</span>
+    <span class="pill pill-ig">Reels</span>
+    <span class="pill pill-yt">Shorts</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>DROP A VIDEO.<br><span class="line2">GET CLIPS.</span></h1>
+    <p>Paste any YouTube link. AI finds the best moments, cuts them to vertical, and hands you ready-to-post shorts.</p>
+  </div>
+
+  <!-- Input Card -->
+  <div class="input-card">
+    <span class="input-label">YouTube URL</span>
+    <div class="url-row">
+      <input class="url-input" type="text" id="url-input" placeholder="https://www.youtube.com/watch?v=..." />
+      <button class="btn-primary" id="chop-btn" onclick="startChop()">CHOP IT →</button>
+    </div>
+
+    <div class="platform-section">
+      <span class="input-label">Target Platforms</span>
+      <div class="platform-toggles">
+        <div class="platform-toggle">
+          <input type="checkbox" id="p-tiktok" value="TikTok" checked>
+          <label for="p-tiktok"><span class="platform-icon">🎵</span> TikTok</label>
+        </div>
+        <div class="platform-toggle">
+          <input type="checkbox" id="p-ig" value="Instagram Reels" checked>
+          <label for="p-ig"><span class="platform-icon">📸</span> Instagram Reels</label>
+        </div>
+        <div class="platform-toggle">
+          <input type="checkbox" id="p-yt" value="YouTube Shorts" checked>
+          <label for="p-yt"><span class="platform-icon">▶️</span> YouTube Shorts</label>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px; padding-top:24px; border-top:1px solid var(--border);">
+      <span class="input-label">Subtitles</span>
+      <div style="display:flex; align-items:center; justify-content:space-between; background:var(--black); border:1px solid var(--border); border-radius:10px; padding:14px 18px;">
+        <div>
+          <div style="font-size:0.88rem; font-weight:500; margin-bottom:3px;">Burn subtitles into clips 🔤</div>
+          <div style="font-size:0.72rem; color:var(--muted2);">Auto-transcribed with Whisper AI — bold captions burned right into the video</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="subtitles-toggle" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div id="whisper-status" style="margin-top:10px; font-size:0.72rem; color:var(--muted); display:none;"></div>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="error-box" id="error-box"></div>
+
+  <!-- Video Info -->
+  <div id="video-info-section" style="display:none; align-items:center; gap:20px; background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:20px 24px; margin-bottom:20px;">
+    <img class="video-thumb" id="video-thumb" src="" alt="thumbnail">
+    <div class="video-meta">
+      <h3 id="video-title">—</h3>
+      <p id="video-meta-text">—</p>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div id="progress-section">
+    <div class="progress-header">
+      <div class="progress-title" id="progress-title">ANALYZING</div>
+      <div class="progress-step" id="progress-step">Step 1 of 5</div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-bar"></div>
+    </div>
+    <div class="progress-message"><span class="spinner"></span><span id="progress-msg">Starting...</span></div>
+    <div class="progress-clips-count" id="clips-count-msg" style="display:none; margin-top:10px; padding-left:22px;"></div>
+  </div>
+
+  <!-- Results -->
+  <div id="results-section">
+    <div class="plan-preview-note" id="plan-preview-note">
+      📋 Clip plan preview — video is still processing. Download links will appear once cutting is complete.
+    </div>
+    <div class="results-header">
+      <div class="results-title">YOUR <span>CLIPS</span></div>
+      <button class="btn-secondary" onclick="resetApp()">← New Video</button>
+    </div>
+    <div class="clips-grid" id="clips-grid"></div>
+  </div>
+
+</main>
+
+<footer>CHOPPR — Built for independent creators</footer>
+
+<div class="toast" id="toast">Copied!</div>
+
+<script>
+let currentJobId = null;
+let pollInterval = null;
+
+const STEP_MAP = {
+  starting:      { label: "STARTING",           step: "Step 1 of 5", pct: 5 },
+  fetching_info: { label: "FETCHING INFO",       step: "Step 1 of 5", pct: 12 },
+  transcript:    { label: "READING TRANSCRIPT",  step: "Step 2 of 5", pct: 22 },
+  ai_analysis:   { label: "AI ANALYSIS",         step: "Step 3 of 5", pct: 38 },
+  downloading:   { label: "DOWNLOADING",         step: "Step 4 of 5", pct: 55 },
+  cutting:       { label: "CUTTING CLIPS",       step: "Step 5 of 5", pct: null },
+  done:          { label: "DONE",                step: "Complete",     pct: 100 },
+  error:         { label: "ERROR",               step: "—",            pct: 0 },
+};
+
+// Check Whisper on page load
+window.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const res = await fetch("/api/whisper_check");
+    const data = await res.json();
+    const el = document.getElementById("whisper-status");
+    el.style.display = "block";
+    if (data.available) {
+      el.innerHTML = "✅ Whisper is installed — subtitles will be burned into every clip automatically.";
+      el.style.color = "#6fcf6f";
+    } else {
+      el.innerHTML = `⚠️ Whisper not installed yet — clips will be cut without subtitles. 
+        Run <code style="background:#1a1a1a;padding:1px 6px;border-radius:3px;font-size:0.7rem;">pip install openai-whisper</code> 
+        in Terminal to enable, then restart the app.`;
+    }
+  } catch(e) {}
+});
+
+function getSelectedPlatforms() {
+  return ["p-tiktok", "p-ig", "p-yt"]
+    .filter(id => document.getElementById(id).checked)
+    .map(id => document.getElementById(id).value);
+}
+
+async function startChop() {
+  const url = document.getElementById("url-input").value.trim();
+  if (!url) return;
+
+  const platforms = getSelectedPlatforms();
+  if (!platforms.length) { showError("Please select at least one platform."); return; }
+
+  const subtitles = document.getElementById("subtitles-toggle").checked;
+
+  resetUI();
+  document.getElementById("chop-btn").disabled = true;
+  document.getElementById("progress-section").style.display = "block";
+  hideError();
+
+  try {
+    const res = await fetch("/api/start", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url, platforms, subtitles })
+    });
+    const data = await res.json();
+    if (data.error) { showError(data.error); return; }
+    currentJobId = data.job_id;
+    pollInterval = setInterval(pollStatus, 1800);
+  } catch (e) {
+    showError("Could not connect to server. Make sure the app is running.");
+  }
+}
+
+async function pollStatus() {
+  if (!currentJobId) return;
+  try {
+    const res = await fetch(`/api/status/${currentJobId}`);
+    const job = await res.json();
+    updateProgress(job);
+
+    if (job.status === "done") {
+      clearInterval(pollInterval);
+      renderClips(job.output_clips, false);
+    } else if (job.status === "error") {
+      clearInterval(pollInterval);
+      showError(job.message);
+      document.getElementById("progress-section").style.display = "none";
+      document.getElementById("chop-btn").disabled = false;
+    }
+
+    // Show plan preview while downloading/cutting
+    if ((job.status === "downloading" || job.status === "cutting") && job.clips_plan && job.clips_plan.length) {
+      if (!document.querySelector(".clip-card")) {
+        document.getElementById("plan-preview-note").style.display = "block";
+        renderClips(job.clips_plan, true);
+      }
+    }
+
+    if (job.video_info && job.video_info.title) {
+      const vi = job.video_info;
+      document.getElementById("video-title").textContent = vi.title;
+      document.getElementById("video-meta-text").textContent = `${vi.uploader} · ${formatDur(vi.duration)}`;
+      if (vi.thumbnail) document.getElementById("video-thumb").src = vi.thumbnail;
+      document.getElementById("video-info-section").style.display = "flex";
+    }
+  } catch(e) {}
+}
+
+function updateProgress(job) {
+  const info = STEP_MAP[job.status] || STEP_MAP.starting;
+  document.getElementById("progress-title").textContent = info.label;
+  document.getElementById("progress-step").textContent = info.step;
+  document.getElementById("progress-msg").textContent = job.message;
+
+  let pct = info.pct;
+  if (job.status === "cutting" && job.total_clips > 0) {
+    pct = 55 + Math.round((job.clips_done / job.total_clips) * 44);
+    document.getElementById("clips-count-msg").style.display = "block";
+    const subNote = job.whisper_available ? " (+ subtitles)" : "";
+    document.getElementById("clips-count-msg").textContent = `${job.clips_done} of ${job.total_clips} clips cut${subNote}`;
+  }
+  document.getElementById("progress-bar").style.width = (pct || 5) + "%";
+}
+
+function renderClips(clips, isPreview) {
+  const grid = document.getElementById("clips-grid");
+  grid.innerHTML = "";
+  document.getElementById("results-section").style.display = "block";
+
+  clips.forEach((clip, i) => {
+    const dur = clip.end_time - clip.start_time;
+    const platforms = clip.platforms || [];
+    const hasFile = !!clip.filename;
+    const hasSubs = !!clip.has_subtitles;
+
+    const platTags = platforms.map(p => {
+      const cls = p.includes("TikTok") ? "tag-tiktok" : p.includes("Instagram") ? "tag-instagram" : "tag-youtube";
+      return `<span class="clip-platform-tag ${cls}">${p}</span>`;
+    }).join("");
+
+    const subBadge = hasSubs
+      ? `<span class="sub-badge">🔤 Subtitles</span>`
+      : "";
+
+    const downloadBtn = hasFile
+      ? `<a class="btn-download" href="/clips/${clip.filename}" download="${clip.filename}">↓ Download MP4</a>`
+      : `<button class="btn-download" style="opacity:0.4;cursor:not-allowed;" disabled>⏳ Processing...</button>`;
+
+    const previewBtn = hasFile
+      ? `<button class="btn-copy" onclick="togglePreview(this, '${clip.filename}')">▶ Preview</button>`
+      : "";
+
+    grid.innerHTML += `
+      <div class="clip-card" id="clip-card-${i}">
+        <div class="clip-card-top">
+          <div class="clip-number-bar">
+            <div class="clip-num">${String(i+1).padStart(2,"0")}</div>
+            <div class="clip-num-label">Clip</div>
+          </div>
+          <div class="clip-body">
+            <div class="clip-hook">${escHtml(clip.hook)}</div>
+            <div class="clip-timestamps">
+              <div class="timestamp-badge"><span class="dot"></span>${formatTime(clip.start_time)} → ${formatTime(clip.end_time)}</div>
+              <div class="ts-dur">${dur}s</div>
+              ${subBadge}
+            </div>
+            <div class="clip-why">💡 ${escHtml(clip.why)}</div>
+            <div class="clip-platforms">${platTags}</div>
+            <div class="clip-caption-wrap">
+              <div class="clip-caption-label">Caption</div>
+              <div class="clip-caption-text">${escHtml(clip.caption)}</div>
+            </div>
+            <div class="clip-actions">
+              ${downloadBtn}
+              <button class="btn-copy" onclick="copyCaption(this, \`${escJs(clip.caption)}\`)">📋 Copy Caption</button>
+              ${previewBtn}
+            </div>
+          </div>
+        </div>
+        <div class="clip-video-wrap" id="video-wrap-${i}"></div>
+      </div>
+    `;
+  });
+
+  if (!isPreview) {
+    document.getElementById("plan-preview-note").style.display = "none";
+    document.getElementById("progress-section").style.display = "none";
+  }
+}
+
+function togglePreview(btn, filename) {
+  const wrap = btn.closest(".clip-card").querySelector(".clip-video-wrap");
+  if (wrap.style.display === "block") {
+    wrap.style.display = "none";
+    wrap.innerHTML = "";
+    btn.textContent = "▶ Preview";
+  } else {
+    wrap.style.display = "block";
+    wrap.innerHTML = `<video controls autoplay src="/clips/${filename}"></video>`;
+    btn.textContent = "✕ Close";
+  }
+}
+
+function copyCaption(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    showToast("Caption copied!");
+    btn.textContent = "✓ Copied";
+    setTimeout(() => btn.textContent = "📋 Copy Caption", 2000);
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+function showError(msg) {
+  const b = document.getElementById("error-box");
+  b.textContent = "⚠️ " + msg;
+  b.style.display = "block";
+}
+
+function hideError() {
+  document.getElementById("error-box").style.display = "none";
+}
+
+function resetUI() {
+  document.getElementById("results-section").style.display = "none";
+  document.getElementById("progress-section").style.display = "none";
+  document.getElementById("video-info-section").style.display = "none";
+  document.getElementById("clips-grid").innerHTML = "";
+  document.getElementById("plan-preview-note").style.display = "none";
+  document.getElementById("clips-count-msg").style.display = "none";
+  document.getElementById("progress-bar").style.width = "0%";
+}
+
+function resetApp() {
+  clearInterval(pollInterval);
+  currentJobId = null;
+  resetUI();
+  hideError();
+  document.getElementById("url-input").value = "";
+  document.getElementById("chop-btn").disabled = false;
+}
+
+function formatTime(secs) {
+  const m = Math.floor(secs / 60), s = secs % 60;
+  return `${m}:${String(s).padStart(2,"0")}`;
+}
+
+function formatDur(secs) {
+  const m = Math.floor(secs / 60), s = secs % 60;
+  return `${m}m ${s}s`;
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function escJs(str) {
+  return String(str).replace(/`/g,"\\`").replace(/\$/g,"\\$");
+}
+
+document.getElementById("url-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") startChop();
+});
+</script>
+</body>
+</html>
